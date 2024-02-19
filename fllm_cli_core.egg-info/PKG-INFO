@@ -1,0 +1,28 @@
+Metadata-Version: 2.1
+Name: fllm-cli-core
+Version: 1.0.0
+Summary: FLLM Command-Line Tools Core Module
+Home-page: https://github.com/solliancenet/fllm-cli
+Author: FoundationalLLM
+Author-email: foundationallm@solliance.net
+License: MIT
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.8.0
+License-File: LICENSE.txt
+
+FLLM CLI Core Module
+==================================
+
+Release History
+===============
+
+See `Release History on GitHub <https://github.com/solliancenet/foundationallm/HISTORY.rst>`__.

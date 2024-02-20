@@ -59,6 +59,11 @@ class AAZArgBrowser:
             for k, d in self._arg_data.items():
                 # not support to access parent from element args
                 yield k, AAZArgBrowser(self._arg_value[k], d, parent=None)
+        elif isinstance(self._arg_data, str):
+            from foundationallm.cli.core.aaz import AAZStrType
+            element = AAZStrType()
+            element.process_data(self._arg_data)
+            yield 0, AAZArgBrowser(element, self._arg_data, parent=None)
         else:
             raise NotImplementedError()
 

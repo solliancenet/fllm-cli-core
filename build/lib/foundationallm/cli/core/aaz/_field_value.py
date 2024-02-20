@@ -60,7 +60,7 @@ class AAZObject(AAZBaseValue):
 
     def __init__(self, schema, data):
         super().__init__(schema, data)
-        assert isinstance(self._data, dict) or self._data is None or self._data == AAZUndefined
+        #assert isinstance(self._data, dict) or self._data is None or self._data == AAZUndefined
 
     def __getitem__(self, key):
         attr_schema, name = self._get_attr_schema_and_name(key)
@@ -335,12 +335,15 @@ class AAZList(AAZBaseValue):
         from ._field_type import AAZListType
         assert isinstance(schema, AAZListType)
         super().__init__(schema, data)
-        assert isinstance(self._data, dict) or self._data is None or self._data == AAZUndefined  # the key is the idx
+        #assert isinstance(self._data, dict) or self._data is None or self._data == AAZUndefined  # the key is the idx
         self._len = 0
         if self._data is not None and self._data != AAZUndefined:
-            for idx in self._data:
-                if idx + 1 > self._len:
-                    self._len = idx + 1
+            try:
+                for idx in self._data:
+                    if idx + 1 > self._len:
+                        self._len = idx + 1
+            except Exception as ex:
+                self._len = len(self._data)
             
     def __getitem__(self, idx) -> AAZBaseValue:
         if not isinstance(idx, int):

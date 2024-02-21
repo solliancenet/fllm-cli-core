@@ -497,7 +497,7 @@ def show_updates(updates_available_components, only_show_when_updates_available=
         else:
             warning_msg = "You have %i update(s) available."
             if CLI_PACKAGE_NAME in updates_available_components:
-                warning_msg = "{} Consider updating your CLI installation with 'az upgrade'".format(warning_msg)
+                warning_msg = "{} Consider updating your CLI installation with 'fllm upgrade'".format(warning_msg)
         logger.warning(warning_msg, len(updates_available_components))
     elif not only_show_when_updates_available:
         print('Your CLI is up-to-date.')

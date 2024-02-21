@@ -112,7 +112,7 @@ class TestResolveFromIndex(unittest.TestCase):
 
         exception_regex = '\n'.join([
             f'This extension requires a min of {min_cli_version} CLI core.',
-            "Please run 'az upgrade' to upgrade to a compatible version."
+            "Please run 'fllm upgrade' to upgrade to a compatible version."
         ])
         with IndexPatch(index_data):
             with self.assertRaisesRegex(NoExtensionCandidatesError, exception_regex):

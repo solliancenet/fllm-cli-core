@@ -291,10 +291,10 @@ def check_version_compatibility(azext_metadata):
             min_max_msgs.append(f"Please run 'az extension update -n {ext_name}' to update it.")
         elif min_required and max_required:
             min_max_msgs.append(f'This extension requires a min of {min_required} and max of {max_required} CLI core.')
-            min_max_msgs.append("Please run 'az upgrade' to upgrade to a compatible version.")
+            min_max_msgs.append("Please run 'fllm upgrade' to upgrade to a compatible version.")
         elif min_required:
             min_max_msgs.append(f'This extension requires a min of {min_required} CLI core.')
-            min_max_msgs.append("Please run 'az upgrade' to upgrade to a compatible version.")
+            min_max_msgs.append("Please run 'fllm upgrade' to upgrade to a compatible version.")
         elif max_required:
             min_max_msgs.append(f'This extension requires a max of {max_required} CLI core.')
             # we do not want users to downgrade CLI core version, so we suggest updating the extension in this case

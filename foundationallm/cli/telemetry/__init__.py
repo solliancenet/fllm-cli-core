@@ -10,10 +10,9 @@ import portalocker
 
 from foundationallm.cli.telemetry.util import save_payload
 
-__version__ = "1.1.0"
+__version__ = "1.0.0b1"
 
 DEFAULT_INSTRUMENTATION_KEY = 'c4395b75-49cc-422c-bc95-c7d51aef5d46'
-
 
 def _start(config_dir):
     from foundationallm.cli.telemetry.components.telemetry_logging import get_logger

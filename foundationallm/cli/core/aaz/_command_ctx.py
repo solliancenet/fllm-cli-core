@@ -93,6 +93,7 @@ class AAZCommandCtx:
     @property
     def subscription_id(self):
         from foundationallm.cli.core.commands.client_factory import get_subscription_id
+
         if self._subscription_id is None:
             self._subscription_id = get_subscription_id(cli_ctx=self.cli_ctx)
         return self._subscription_id

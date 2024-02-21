@@ -295,7 +295,7 @@ def get_installed_cli_distributions():
 def get_latest_from_github(package_path='fllm-cli'):
     try:
         import requests
-        git_url = "https://raw.githubusercontent.com/Azure/azure-cli/main/src/{}/setup.py".format(package_path)
+        git_url = "https://raw.githubusercontent.com/solliancenet/fllm-cli/main/setup.py"
         response = requests.get(git_url, timeout=10)
         if response.status_code != 200:
             logger.info("Failed to fetch the latest version from '%s' with status code '%s' and reason '%s'",

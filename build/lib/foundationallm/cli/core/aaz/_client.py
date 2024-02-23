@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from knack.log import get_logger
-from foundationallm.core import PipelineClient
+from azure.core import PipelineClient
 from foundationallm.core.configuration import Configuration
 from foundationallm.core.polling.base_polling import LocationPolling, StatusCheckPolling
 from abc import abstractmethod

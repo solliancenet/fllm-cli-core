@@ -170,7 +170,7 @@ def _prepare_client_kwargs_track2(cli_ctx):
 
     # Disable ARMHttpLoggingPolicy.
     #   ARMHttpLoggingPolicy: Only log allowed information.
-    from foundationallm.core.pipeline.policies import SansIOHTTPPolicy
+    from azure.core.pipeline.policies import SansIOHTTPPolicy
     client_kwargs['http_logging_policy'] = SansIOHTTPPolicy()
 
     return client_kwargs

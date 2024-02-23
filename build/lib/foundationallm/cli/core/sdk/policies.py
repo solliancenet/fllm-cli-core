@@ -7,7 +7,6 @@ import logging
 import re
 import types
 
-#must stay as inherited from this...or execution fails later.
 from azure.core.pipeline.policies import SansIOHTTPPolicy
 from knack.log import get_logger
 

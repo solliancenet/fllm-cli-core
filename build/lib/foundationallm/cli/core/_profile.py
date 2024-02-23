@@ -165,7 +165,7 @@ class Profile:
         subscriptions = []
         consolidated = []
 
-        if self.cli_ctx.cloud.name != 'FllmCloud':
+        if not self.cli_ctx.cloud.endpoints.client_id:
             
             subscription_finder = SubscriptionFinder(self.cli_ctx)
 
@@ -313,7 +313,7 @@ class Profile:
         :param aux_tenants:
         """
 
-        if (self.cli_ctx.cloud.name == 'FllmCloud'):
+        if (self.cli_ctx.cloud.endpoints.client_id):
             resource = resource or self.cli_ctx.cloud.endpoints.management_client_id
             self._arm_scope = f"{resource}/.default"
         else:
@@ -544,15 +544,12 @@ class Profile:
         subscriptions = self._storage.get(_SUBSCRIPTIONS) or []
         active_cloud = self.cli_ctx.cloud
         cached_subscriptions = [sub for sub in subscriptions
-                                if all_clouds or sub[_ENVIRONMENT_NAME] == active_cloud.name or active_cloud.name == 'FllmCloud']
+                                if all_clouds or sub[_ENVIRONMENT_NAME] == active_cloud.name or active_cloud.endpoints.client_id]
         # use deepcopy as we don't want to persist these changes to file.
         return deepcopy(cached_subscriptions)
 
     def get_current_account_user(self):
 
-        #if (self.cli_ctx.cloud.name == 'FllmCloud'):
-        #    return { 'id' : '', 'user' : { 'assignedIdentityInfo' : '', 'name' : '' , 'type' : 'user' }, 'tenantId' : ''}
-        
         try:
             active_account = self.get_subscription()
         except CLIError:
@@ -561,11 +558,8 @@ class Profile:
         return active_account[_USER_ENTITY][_USER_NAME]
 
     def get_subscription(self, subscription=None):  # take id or name
-        
-        subscriptions = self.load_cached_subscriptions()
 
-        #if (self.cli_ctx.cloud.name == 'FllmCloud'):
-        #    return { 'id' : '', 'user' : { 'assignedIdentityInfo' : '', 'name' : '' , 'type' : 'user' }, 'tenantId' : ''}
+        subscriptions = self.load_cached_subscriptions()
 
         if not subscriptions:
             raise CLIError(_AZ_LOGIN_MESSAGE)
@@ -578,7 +572,7 @@ class Profile:
             raise CLIError("Subscription '{}' not found. "
                            "Check the spelling and casing and try again.".format(subscription))
         if not result and not subscription:
-            raise CLIError("No subscription found. Run 'az account set' to select a subscription.")
+            raise CLIError("No subscription found. Run 'fllm account set' to select a subscription.")
         if len(result) > 1:
             raise CLIError("Multiple subscriptions with the name '{}' found. "
                            "Specify the subscription ID.".format(subscription))
@@ -760,57 +754,61 @@ class SubscriptionFinder:
         mfa_tenants = []
 
         client = self._create_subscription_client(credential)
-        tenants = client.tenants.list()
 
-        for t in tenants:
-            tenant_id = t.tenant_id
-            # display_name is available since /tenants?api-version=2018-06-01,
-            # not available in /tenants?api-version=2016-06-01
-            if not hasattr(t, 'display_name'):
-                t.display_name = None
+        try:
+            tenants = client.tenants.list()
 
-            t.tenant_id_name = tenant_id
-            if t.display_name:
-                # e.g. '72f988bf-86f1-41af-91ab-2d7cd011db47 Microsoft'
-                t.tenant_id_name = "{} '{}'".format(tenant_id, t.display_name)
+            for t in tenants:
+                tenant_id = t.tenant_id
+                # display_name is available since /tenants?api-version=2018-06-01,
+                # not available in /tenants?api-version=2016-06-01
+                if not hasattr(t, 'display_name'):
+                    t.display_name = None
 
-            logger.info("Finding subscriptions under tenant %s", t.tenant_id_name)
+                t.tenant_id_name = tenant_id
+                if t.display_name:
+                    # e.g. '72f988bf-86f1-41af-91ab-2d7cd011db47 Microsoft'
+                    t.tenant_id_name = "{} '{}'".format(tenant_id, t.display_name)
 
-            identity = _create_identity_instance(self.cli_ctx, self._authority, tenant_id=tenant_id)
+                logger.info("Finding subscriptions under tenant %s", t.tenant_id_name)
 
-            specific_tenant_credential = identity.get_user_credential(username)
+                identity = _create_identity_instance(self.cli_ctx, self._authority, tenant_id=tenant_id)
 
-            try:
-                subscriptions = self.find_using_specific_tenant(tenant_id, specific_tenant_credential)
-            except AuthenticationError as ex:
-                # because user creds went through the 'common' tenant, the error here must be
-                # tenant specific, like the account was disabled. For such errors, we will continue
-                # with other tenants.
-                msg = ex.error_msg
-                if 'AADSTS50076' in msg:
-                    # The tenant requires MFA and can't be accessed with home tenant's refresh token
-                    mfa_tenants.append(t)
-                else:
-                    logger.warning("Failed to authenticate %s due to error '%s'", t.tenant_id_name, ex)
-                continue
+                specific_tenant_credential = identity.get_user_credential(username)
 
-            if not subscriptions:
-                empty_tenants.append(t)
+                try:
+                    subscriptions = self.find_using_specific_tenant(tenant_id, specific_tenant_credential)
+                except AuthenticationError as ex:
+                    # because user creds went through the 'common' tenant, the error here must be
+                    # tenant specific, like the account was disabled. For such errors, we will continue
+                    # with other tenants.
+                    msg = ex.error_msg
+                    if 'AADSTS50076' in msg:
+                        # The tenant requires MFA and can't be accessed with home tenant's refresh token
+                        mfa_tenants.append(t)
+                    else:
+                        logger.warning("Failed to authenticate %s due to error '%s'", t.tenant_id_name, ex)
+                    continue
 
-            # When a subscription can be listed by multiple tenants, only the first appearance is retained
-            for sub_to_add in subscriptions:
-                add_sub = True
-                for sub_to_compare in all_subscriptions:
-                    if sub_to_add.subscription_id == sub_to_compare.subscription_id:
-                        logger.warning("Subscription %s '%s' can be accessed from tenants %s(default) and %s. "
-                                       "To select a specific tenant when accessing this subscription, "
-                                       "use 'fllm login --tenant TENANT_ID'.",
-                                       sub_to_add.subscription_id, sub_to_add.display_name,
-                                       sub_to_compare.tenant_id, sub_to_add.tenant_id)
-                        add_sub = False
-                        break
-                if add_sub:
-                    all_subscriptions.append(sub_to_add)
+                if not subscriptions:
+                    empty_tenants.append(t)
+
+                # When a subscription can be listed by multiple tenants, only the first appearance is retained
+                for sub_to_add in subscriptions:
+                    add_sub = True
+                    for sub_to_compare in all_subscriptions:
+                        if sub_to_add.subscription_id == sub_to_compare.subscription_id:
+                            logger.warning("Subscription %s '%s' can be accessed from tenants %s(default) and %s. "
+                                        "To select a specific tenant when accessing this subscription, "
+                                        "use 'fllm login --tenant TENANT_ID'.",
+                                        sub_to_add.subscription_id, sub_to_add.display_name,
+                                        sub_to_compare.tenant_id, sub_to_add.tenant_id)
+                            add_sub = False
+                            break
+                    if add_sub:
+                        all_subscriptions.append(sub_to_add)
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.warning("Error occurred when fetching tenants: %s", ex)
 
         # Show warning for empty tenants
         if empty_tenants:
@@ -831,10 +829,15 @@ class SubscriptionFinder:
         client = self._create_subscription_client(credential)
         subscriptions = client.subscriptions.list()
         all_subscriptions = []
-        for s in subscriptions:
-            _attach_token_tenant(s, tenant)
-            all_subscriptions.append(s)
-        self.tenants.append(tenant)
+
+        try:
+            for s in subscriptions:
+                _attach_token_tenant(s, tenant)
+                all_subscriptions.append(s)
+            self.tenants.append(tenant)
+        except Exception as ex:
+            logger.warning("Error occurred when fetching subscriptions: %s", ex)
+
         return all_subscriptions
 
     def _create_subscription_client(self, credential):

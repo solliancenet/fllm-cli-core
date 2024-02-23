@@ -28,7 +28,7 @@ def resolve_client_arg_name(operation, kwargs):
     path, op_path = operation.split('#', 1)
 
     path_comps = path.split('.')
-    if path_comps[0] == 'azure':
+    if path_comps[0] == 'azure' or path_comps[0] == 'foundationallm':
         if path_comps[1] != 'cli' or _is_vendored_sdk_path(path_comps):
             # Public SDK: azure.mgmt.resource... (mgmt-plane) or azure.storage.blob... (data-plane)
             # Vendored SDK: foundationallm.cli.command_modules.keyvault.vendored_sdks...

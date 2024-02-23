@@ -608,7 +608,12 @@ def get_default_cloud_name():
 
 
 def _get_cloud(cli_ctx, cloud_name):
-    return next((x for x in get_clouds(cli_ctx) if x.name == cloud_name), None)
+    for cloud in get_clouds(cli_ctx):
+        if cloud.name.lower() == cloud_name.lower():
+            return cloud
+    
+    return None
+    #return next((x for x in get_clouds(cli_ctx) if x.name == cloud_name), None)
 
 
 def cloud_is_registered(cli_ctx, cloud_name):

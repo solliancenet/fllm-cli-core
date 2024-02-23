@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "1.0.0b1"
+VERSION = "1.0.0b3"
 
 # If we have source, validate that our version numbers match
 # This should prevent uploading releases with mismatched versions.

@@ -31,7 +31,7 @@ from typing import TYPE_CHECKING, Optional, Tuple, TypeVar, Union, Any, Type
 from types import TracebackType
 
 from foundationallm.core.pipeline import PipelineRequest, PipelineResponse
-from foundationallm.core.pipeline.policies import SansIOHTTPPolicy
+from azure.core.pipeline.policies import SansIOHTTPPolicy
 from foundationallm.core.pipeline.transport import HttpResponse as LegacyHttpResponse, HttpRequest as LegacyHttpRequest
 from foundationallm.core.rest import HttpResponse, HttpRequest
 from foundationallm.core.settings import settings

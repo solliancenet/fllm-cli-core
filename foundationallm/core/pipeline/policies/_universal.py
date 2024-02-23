@@ -42,7 +42,7 @@ from foundationallm.core import __version__ as azcore_version
 from foundationallm.core.exceptions import DecodeError
 
 from foundationallm.core.pipeline import PipelineRequest, PipelineResponse
-from ._base import SansIOHTTPPolicy
+from azure.core.pipeline.policies import SansIOHTTPPolicy
 
 from ..transport import HttpRequest as LegacyHttpRequest
 from ..transport._base import _HttpResponseBase as LegacySansIOHttpResponse

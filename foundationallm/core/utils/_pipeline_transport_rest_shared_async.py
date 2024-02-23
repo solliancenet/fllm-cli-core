@@ -10,7 +10,7 @@ from ..pipeline import PipelineContext, PipelineRequest, PipelineResponse
 from ..pipeline._tools_async import await_result as _await_result
 
 if TYPE_CHECKING:
-    from ..pipeline.policies import SansIOHTTPPolicy
+    from azure.core.pipeline.policies import SansIOHTTPPolicy
 
 
 HttpResponseType = TypeVar("HttpResponseType")

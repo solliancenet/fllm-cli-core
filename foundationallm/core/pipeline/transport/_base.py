@@ -55,7 +55,7 @@ from typing import (
 from http.client import HTTPResponse as _HTTPResponse
 
 from foundationallm.core.exceptions import HttpResponseError
-from foundationallm.core.pipeline.policies import SansIOHTTPPolicy
+from azure.core.pipeline.policies import SansIOHTTPPolicy
 from ...utils._utils import case_insensitive_dict
 from ...utils._pipeline_transport_rest_shared import (
     _format_parameters_helper,

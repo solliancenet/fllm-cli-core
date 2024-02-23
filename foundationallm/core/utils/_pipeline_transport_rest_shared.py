@@ -43,7 +43,7 @@ if TYPE_CHECKING:
     )
 
     HTTPRequestType = Union[RestHttpRequestPy3, PipelineTransportHttpRequest]
-    from ..pipeline.policies import SansIOHTTPPolicy
+    from azure.core.pipeline.policies import SansIOHTTPPolicy
     from foundationallm.core.pipeline.transport import (  # pylint: disable=non-abstract-transport-import
         HttpResponse as PipelineTransportHttpResponse,
         AioHttpTransportResponse as PipelineTransportAioHttpTransportResponse,

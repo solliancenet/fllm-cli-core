@@ -27,7 +27,7 @@ from typing import List, Optional, Any, TypeVar
 from foundationallm.core.pipeline import PipelineRequest
 from foundationallm.core.pipeline.transport import HttpRequest as LegacyHttpRequest, HttpResponse as LegacyHttpResponse
 from foundationallm.core.rest import HttpRequest, HttpResponse
-from ._base import SansIOHTTPPolicy
+from azure.core.pipeline.policies import SansIOHTTPPolicy
 
 HTTPResponseType = TypeVar("HTTPResponseType", HttpResponse, LegacyHttpResponse)
 HTTPRequestType = TypeVar("HTTPRequestType", HttpRequest, LegacyHttpRequest)

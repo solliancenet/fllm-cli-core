@@ -7,7 +7,8 @@ import logging
 import re
 import types
 
-from foundationallm.core.pipeline.policies import SansIOHTTPPolicy
+#must stay as inherited from this...or execution fails later.
+from azure.core.pipeline.policies import SansIOHTTPPolicy
 from knack.log import get_logger
 
 _LOGGER = get_logger(__name__)

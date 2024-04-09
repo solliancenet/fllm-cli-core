@@ -10,7 +10,7 @@ import portalocker
 
 from foundationallm.cli.telemetry.util import save_payload
 
-__version__ = "1.0.0b5"
+__version__ = "1.0.0b6"
 
 DEFAULT_INSTRUMENTATION_KEY = '8029bc13-af26-458b-b1d7-90a2632318b9'
 

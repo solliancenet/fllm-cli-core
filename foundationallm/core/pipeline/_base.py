@@ -31,7 +31,7 @@ from foundationallm.core.pipeline import (
     PipelineResponse,
     PipelineContext,
 )
-from foundationallm.core.pipeline.policies import HTTPPolicy, SansIOHTTPPolicy
+from azure.core.pipeline.policies import HTTPPolicy, SansIOHTTPPolicy
 from ._tools import await_result as _await_result
 from .transport import HttpTransport
 
